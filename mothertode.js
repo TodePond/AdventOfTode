@@ -168,7 +168,7 @@ TERM._PartsGroupSingle = TERM.emit(
 		TERM.maybe(TERM.gap),
 		TERM.string(")"),
 	]),
-	([b, _, part]) => part.output
+	([b, _, part]) => `TERM.list([\n	${part.output}\n])`,
 )
 
 TERM._PartsGroupMulti = TERM.emit(
@@ -183,7 +183,7 @@ TERM._PartsGroupMulti = TERM.emit(
 		TERM.maybe(TERM.gap),
 		TERM.string(")"),
 	]),
-	([b, g1, nl, g2, part]) => part.output,
+	([b, g1, nl, g2, part]) => `TERM.list([\n	${part.output}\n])`,
 )
 
 TERM._PartGroupMultiInner = TERM.or([
