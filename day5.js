@@ -1,4 +1,7 @@
-const input = `...`
+const input = `FBFBBFFRLR
+BFFFBBFRRR
+FFFBBBFRRR
+BBFFBBFRLL`
 
 const lines = input.split("\n")
 
