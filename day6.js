@@ -1,4 +1,18 @@
-const input = `...`
+const input = `abc
+
+a
+b
+c
+
+ab
+ac
+
+a
+a
+a
+a
+
+b`
 
 MotherTode`
 Language (
