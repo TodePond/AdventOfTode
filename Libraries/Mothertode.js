@@ -101,6 +101,7 @@ TERM._Part = TERM.or([
 	TERM.term("_Parts"),
 	TERM.term("_PartOrOperator"),
 	TERM.term("_PartExcept"),
+	TERM.term("_PartNoExcept"),
 	TERM.term("_PartMany"),
 	TERM.term("_PartMaybeQuestion"),
 	TERM.term("_PartsGroupSingle"),
@@ -158,6 +159,15 @@ TERM._PartExcept = TERM.emit(
 		TERM.term("_Part"),
 	]),
 	([left, g1, op, g2, right]) => `TERM.orExcept(\n	${left.output},\n	${right.output}\n)`
+)
+
+TERM._PartNoExcept = TERM.emit(
+	TERM.list([
+		TERM.string("any"),
+		TERM.maybe(TERM.gap),
+		TERM.term("_Part"),
+	]),
+	([any, g1, part]) => `TERM.orNoExcept(\n	${part.output})`
 )
 
 TERM._PartsGroupSingle = TERM.emit(

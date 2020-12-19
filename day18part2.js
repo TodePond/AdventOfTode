@@ -3,14 +3,13 @@ const input = ``
 
 MotherTode`
 Language :: Expression
-Expression :: Number Operations? >> ([l, ops]) => ["("].repeated(ops.child.child[0].child.length).join("") + l.output + ops.output
-Number :: Group | Literal
+Expression :: Number
+Number :: Operation | Group | Literal
 Literal :: /[0-9]/+
-Operations :: Operation+
-Operation :: Add | Times >> (o) => o.output + ")"
-Add :: " + " Number >> (e) => e.output
-Times :: " * " Number  >> (e) => e.output
-Group :: "(" Expression ")"
+Operation :: Multiply | Add
+Add :: Number except Add " + " Number >> (a) => "(" + a.output + ")"
+Multiply :: Number except Multiply " * " Number
+Group :: "(" any Number ")"
 `
 
 new Function("return " + TERM.Language("1 + 2 * 3 + 4 * 5 + 6".d).output.d)().d
