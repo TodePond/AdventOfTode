@@ -215,7 +215,7 @@ TERM._PartGroupMultiInners = TERM.emit(
 TERM._StringLiteral = TERM.emit(
 	TERM.list([
 		TERM.string('"'),
-		TERM.maybe(TERM.many(TERM.regexp(/[^"]/))),
+		TERM.maybe(TERM.many(TERM.regexp(/[^"]/))), //"
 		TERM.string('"'),
 	]),
 	([_, inner]) => `TERM.string(\`${inner.output}\`)`
@@ -224,7 +224,7 @@ TERM._StringLiteral = TERM.emit(
 TERM._StringLiteralSingleQuotes = TERM.emit(
 	TERM.list([
 		TERM.string("'"),
-		TERM.maybe(TERM.many(TERM.regexp(/[^']/))),
+		TERM.maybe(TERM.many(TERM.regexp(/[^']/))), //'
 		TERM.string("'"),
 	]),
 	([_, inner]) => `TERM.string(\`${inner.output}\`)`
@@ -246,12 +246,12 @@ TERM._PartNameLiteral = TERM.emit(
 
 TERM._PartName = TERM.list([
 	TERM.regexp(/[a-zA-Z_]/),
-	TERM.maybe(TERM.many(TERM.regexp(/[_a-zA-Z]/))),
+	TERM.maybe(TERM.many(TERM.regexp(/[_a-zA-Z0-9]/))),
 ])
 
 TERM._TermName = TERM.list([
 	TERM.regexp(/[A-Z_]/),
-	TERM.maybe(TERM.many(TERM.regexp(/[_a-zA-Z]/))),
+	TERM.maybe(TERM.many(TERM.regexp(/[_a-zA-Z0-9]/))),
 ])
 
 TERM._TermCommaOperation = TERM.emit(
