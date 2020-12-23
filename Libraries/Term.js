@@ -240,7 +240,11 @@ TERM = {}
 	TERM.term = (name) => {
 		if (TERM.cache[name] !== undefined) return TERM.cache[name]
 		
-		const func = (...args) => TERM[name](...args)
+		const func = (...args) => {
+			const term = TERM[name]
+			if (term === undefined) throw new Error(`[Term.js] Unrecognised term: '${name}'`)
+			return TERM[name](...args)
+		}
 		func._.terms.get = () => TERM[name] === undefined? undefined : TERM[name].terms
 		func._.term.get = () => TERM[name] === undefined? undefined : TERM[name].term
 		func._.func.get = () => TERM[name] === undefined? undefined : TERM[name].func
