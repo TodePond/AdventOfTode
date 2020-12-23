@@ -76,8 +76,8 @@ lines.push("Message :: Rule0")
 
 const zeroLines = ["Rule0 :: 'hi'"]
 
-const MAX_DEPTH_8 = 6
-const MAX_DEPTH_11 = 6
+const MAX_DEPTH_8 = 10
+const MAX_DEPTH_11 = 10
 let t = 1
 for (let i = 1; i <= MAX_DEPTH_8; i++) {
 	for (let j = 1; j <= MAX_DEPTH_11; j++) {
