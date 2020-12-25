@@ -17,6 +17,7 @@ TERM = {}
 		term,
 		child,
 		args,
+		toString() { return this.output },
 	})
 	
 	TERM.fail = ({tail, source, output, term, args}, child) => ({
@@ -27,6 +28,7 @@ TERM = {}
 		term,
 		child,
 		args,
+		toString() { return this.output },
 	})
 	
 	//===========//
