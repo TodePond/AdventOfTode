@@ -44,7 +44,7 @@ on.load(() => {
 		state = move(state)
 		i++
 		
-		context.fillRect(50 + state.horizontalPosition * 0.5, 100 + state.depth*0.5, 5, 5)
+		context.fillRect(50 + state.horizontalPosition * 0.4, 100 + state.depth*0.6, 5, 5)
 		
 	}
 	
