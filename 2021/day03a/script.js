@@ -47,10 +47,10 @@ on.load(() => {
 			if (!finished) {
 				const gammaString = states.map(s => s > 0? "1" : "0").join("").d
 				const epsilonString = states.map(s => s > 0? "0" : "1").join("").d
-
+				
 				const gamma = parseInt(gammaString, 2).d
 				const epsilon = parseInt(epsilonString, 2).d
-
+				
 				print("Answer:", gamma * epsilon)
 			}
 			finished = true
