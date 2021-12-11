@@ -1,4 +1,3 @@
-
 input = `0,9 -> 5,9
 8,0 -> 0,8
 9,4 -> 3,4
@@ -33,7 +32,7 @@ const makeLine = (entry) => {
 	const [start, end] = entry
 	const [sx, sy] = start
 	const [ex, ey] = end
-	if (sx === ex || sy === ey) {
+	//if (sx === ex || sy === ey) {
 		const [dx, dy] = [ex - sx, ey - sy]
 		const [adx, ady] = [dx, dy].map(Math.abs)
 		const length = Math.max(adx, ady)
@@ -46,9 +45,9 @@ const makeLine = (entry) => {
 			y += iy
 		}
 		return line
-	}
+	//}
 
-	else return undefined
+	//else return undefined
 }
 
 const entries = JavaScript `${Entries(input).output}`
