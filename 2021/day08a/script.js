@@ -27,14 +27,26 @@ const NUMBER = [
 	"abcdfg",
 ]
 
-let count = 0
-for (const output of outputs) {
-	for (const value of output) {
-		if (value.length === NUMBER[1].length) count++
-		else if (value.length === NUMBER[4].length) count++
-		else if (value.length === NUMBER[7].length) count++
-		else if (value.length === NUMBER[8].length) count++
-	}
+// Possible wirings for each number (in each entry)
+const wirings = []
+for (const entry of entries) {
+	wirings.push(["abcdefg"].repeat(10))
 }
 
-print(count)
+const state = {
+	entry: 0,
+}
+
+on.load(() => {
+	const show = Show.start()
+	const {context, canvas} = show
+
+	show.tick = () => {
+
+		const entry = entries[state.entry]
+		const {pattern, output} = entry
+
+		
+
+	}
+})
