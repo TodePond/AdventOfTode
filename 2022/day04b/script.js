@@ -12,8 +12,13 @@ const { Term } = MotherTode
 const terms = Term.hoist(({ pair, sections, section }) => {
 	return {
 		pair: Term.emit(Term.list([sections, Term.string(","), sections]), ([a, _, b]) => {
+			// Check if a section is fully within another section
 			if (a.start >= b.start && a.end <= b.end) return true
 			if (b.start >= a.start && b.end <= a.end) return true
+
+			// Check if a section overlaps another section
+			if (a.start <= b.start && a.end >= b.start) return true
+			if (b.start <= a.start && b.end >= a.start) return true
 			return false
 		}),
 		sections: Term.emit(Term.list([section, Term.string("-"), section]), ([start, _, end]) => {
