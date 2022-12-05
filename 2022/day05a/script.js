@@ -19,7 +19,7 @@ const Instruction = Term.hoist(({ move, from, to, number, instruction }) => {
 		move: Term.string("move "),
 		from: Term.string(" from "),
 		to: Term.string(" to "),
-		number: Term.emit(Term.regExp(/[0-9]+/), (v) => parseInt(v) + 1),
+		number: Term.emit(Term.regExp(/[0-9]+/), (v) => parseInt(v) - 1),
 
 		instruction: Term.emit(Term.list([move, number, from, number, to, number]), ([m, count, f, start, t, end]) => ({
 			count,
@@ -48,27 +48,40 @@ const Arrangement = Term.hoist(({ gap, cell, empty, crate, row, rowTail }) => {
 })
 
 const movements = instructions.map((v) => Instruction.instruction.translate(v)).d
-const rows = layers.map((v) => Arrangement.row.translate(v)).d
+const rows = layers.map((v) => Arrangement.row.translate(v))
 
-const startingColumns = rows[0].map((_, i) => rows.map((row) => row[i]).reverse())
+const startingColumns = rows[0].map((_, i) =>
+	rows
+		.map((row) => row[i])
+		.reverse()
+		.filter((v) => v !== ""),
+).d
 
-const applyMovements = (columns, movement) => {
+const applyMovement = (columns, movement) => {
 	const { start, end, count } = movement
 
 	const startColumn = columns[start]
 	const endColumn = columns[end]
 
-	const moved = startColumn.slice(0, count)
-	const remaining = startColumn.slice(count)
+	const selectedCrates = startColumn.slice(-count)
+	const remainingCrates = startColumn.slice(0, count)
 
-	const newStartColumn = remaining
-	const newEndColumn = [...moved, ...endColumn]
+	const newStartColumn = remainingCrates
+	const newEndColumn = [...endColumn, ...selectedCrates]
 
-	const newColumns = [...columns]
+	const newColumns = [...columns] //todo: clone better
 	newColumns[start] = newStartColumn
 	newColumns[end] = newEndColumn
 
 	return newColumns
 }
 
-applyMovements(startingColumns, movements[0]).d
+const applyMovements = (columns, movements) => {
+	let newColumns = [...columns]
+	for (const movement of movements) {
+		newColumns = applyMovement(newColumns, movement)
+	}
+	return newColumns
+}
+
+applyMovements(startingColumns, movements).d
