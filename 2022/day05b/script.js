@@ -65,7 +65,7 @@ const applyMovement = (columns, movement) => {
 	const startColumn = newColumns[start]
 	const endColumn = newColumns[end]
 
-	const selectedCrates = startColumn.slice(-count).reverse()
+	const selectedCrates = startColumn.slice(-count)
 	const remainingCrates = startColumn.slice(0, -count)
 
 	const newStartColumn = [...remainingCrates]
