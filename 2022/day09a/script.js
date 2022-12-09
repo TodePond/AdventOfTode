@@ -12,7 +12,7 @@ const lines = input.split("\n")
 const terms = Term.hoist(({ line, command, number, direction, up, down, left, right }) => {
 	return {
 		line: Term.emit(Term.list([direction, Term.string(" "), number]), ([v, _, n]) => {
-			return repeatArray([v], n)
+			return repeatArray([v], n - 1)
 		}),
 		number: Term.emit(Term.regExp(/[0-9]+/), (v) => parseInt(v)),
 		direction: Term.emit(Term.or([up, down, left, right]), ([v]) => v),
