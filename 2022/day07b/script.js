@@ -110,5 +110,14 @@ const executeInstructions = (instructions) => {
 }
 
 const directories = executeInstructions(instructions).d
-const candidates = [...directories].filter(([_, size]) => size <= 100000).d
-const answer = candidates.map(([_, size]) => size).reduce((a, b) => a + b).d
+
+const usedSpace = directories.get("")
+const unusedSpace = 70000000 - usedSpace
+const extraSpaceNeeded = 30000000 - unusedSpace
+
+print("used space:", usedSpace)
+print("unused space:", unusedSpace)
+print("extra space needed:", extraSpaceNeeded)
+
+const candidates = [...directories].filter(([_, size]) => size > extraSpaceNeeded).sort((a, b) => a[1] - b[1]).d
+print("answer:", candidates[0][0], "size:", candidates[0][1])
