@@ -1,11 +1,11 @@
-const input = `R 4
-U 4
-L 3
-D 1
-R 4
-D 1
-L 5
-R 2`
+const input = `R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20`
 
 const lines = input.split("\n")
 
@@ -28,10 +28,13 @@ const steps = lines.map((line) => terms.line.translate(line)).flat()
 print("steps", steps)
 
 let headPosition = [0, 0]
-let tailPosition = [0, 0]
+let tail = []
+for (let i = 0; i < 10 - 1; i++) {
+	tail.push([0, 0])
+}
 let stepIndex = 0
 
-const tailPositions = new Set([_(tailPosition)])
+const tailPositions = new Set([_([0, 0])])
 
 const stage = new Stage({ speed: 3.0 })
 stage.update = (context) => {
@@ -46,17 +49,26 @@ stage.update = (context) => {
 	const [sx, sy] = step
 
 	headPosition = [hx + sx, hy + sy]
-	const displacement = subtract(tailPosition, headPosition)
-	const [dx, dy] = displacement
 
-	if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
-		if (dx !== 0) {
-			tailPosition[0] -= Math.sign(dx)
+	let position = headPosition
+	for (let i = 0; i < tail.length; i++) {
+		const tailPosition = tail[i]
+		const displacement = subtract(tailPosition, position)
+		const [dx, dy] = displacement
+
+		if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
+			if (dx !== 0) {
+				tailPosition[0] -= Math.sign(dx)
+			}
+			if (dy !== 0) {
+				tailPosition[1] -= Math.sign(dy)
+			}
+			if (i === tail.length - 1) {
+				tailPositions.add(_(tailPosition))
+			}
 		}
-		if (dy !== 0) {
-			tailPosition[1] -= Math.sign(dy)
-		}
-		tailPositions.add(_(tailPosition))
+
+		position = tailPosition
 	}
 
 	const { canvas } = context
@@ -70,13 +82,15 @@ stage.update = (context) => {
 		context.fillRect(ORIGIN[0] + x * CELL_SIZE, ORIGIN[1] + y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
 	}
 
-	context.fillStyle = SILVER
-	context.fillRect(
-		ORIGIN[0] + tailPosition[0] * CELL_SIZE,
-		ORIGIN[1] + tailPosition[1] * CELL_SIZE,
-		CELL_SIZE,
-		CELL_SIZE,
-	)
+	for (const tailPosition of tail) {
+		context.fillStyle = SILVER
+		context.fillRect(
+			ORIGIN[0] + tailPosition[0] * CELL_SIZE,
+			ORIGIN[1] + tailPosition[1] * CELL_SIZE,
+			CELL_SIZE,
+			CELL_SIZE,
+		)
+	}
 
 	context.fillStyle = WHITE
 	context.fillRect(
