@@ -109,12 +109,9 @@ const terms = Term.hoist(
 				]),
 				([, op, , n]) => new Function("old", `return old ${op} ${n}`),
 			),
-			test: Term.emit(
-				Term.list([Term.string("  Test: divisible by "), number]),
-				([, n]) =>
-					(v) =>
-						v % n === 0,
-			),
+			test: Term.emit(Term.list([Term.string("  Test: divisible by "), number]), ([, n]) => {
+				return (v) => v % n === 0
+			}),
 			ifTrue: Term.emit(
 				Term.list([Term.string("    If true: throw to monkey "), number]),
 				([, n]) => n,
@@ -188,7 +185,11 @@ showMonkeys()
 for (let i = 0; i < 20; i++) {
 	doRound()
 }
+print("brrr")
 showMonkeys()
 showMonkeyCounts()
 
-print("Done", monkeys[0].count * monkeys.at(-1).count)
+const sorted = monkeys.sort((a, b) => b.count - a.count)
+print("sorted", sorted)
+
+print("Done", sorted[0].count * sorted[1].count)
