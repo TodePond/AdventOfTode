@@ -1,58 +1,30 @@
 const input = `Monkey 0:
-  Starting items: 74, 64, 74, 63, 53
-  Operation: new = old * 7
-  Test: divisible by 5
-    If true: throw to monkey 1
-    If false: throw to monkey 6
+  Starting items: 79, 98
+  Operation: new = old * 19
+  Test: divisible by 23
+    If true: throw to monkey 2
+    If false: throw to monkey 3
 
 Monkey 1:
-  Starting items: 69, 99, 95, 62
-  Operation: new = old * old
-  Test: divisible by 17
+  Starting items: 54, 65, 75, 74
+  Operation: new = old + 6
+  Test: divisible by 19
     If true: throw to monkey 2
-    If false: throw to monkey 5
+    If false: throw to monkey 0
 
 Monkey 2:
-  Starting items: 59, 81
-  Operation: new = old + 8
-  Test: divisible by 7
-    If true: throw to monkey 4
+  Starting items: 79, 60, 97
+  Operation: new = old * old
+  Test: divisible by 13
+    If true: throw to monkey 1
     If false: throw to monkey 3
 
 Monkey 3:
-  Starting items: 50, 67, 63, 57, 63, 83, 97
-  Operation: new = old + 4
-  Test: divisible by 13
-    If true: throw to monkey 0
-    If false: throw to monkey 7
-
-Monkey 4:
-  Starting items: 61, 94, 85, 52, 81, 90, 94, 70
+  Starting items: 74
   Operation: new = old + 3
-  Test: divisible by 19
-    If true: throw to monkey 7
-    If false: throw to monkey 3
-
-Monkey 5:
-  Starting items: 69
-  Operation: new = old + 5
-  Test: divisible by 3
-    If true: throw to monkey 4
-    If false: throw to monkey 2
-
-Monkey 6:
-  Starting items: 54, 55, 58
-  Operation: new = old + 7
-  Test: divisible by 11
-    If true: throw to monkey 1
-    If false: throw to monkey 5
-
-Monkey 7:
-  Starting items: 79, 51, 83, 88, 93, 76
-  Operation: new = old * 3
-  Test: divisible by 2
+  Test: divisible by 17
     If true: throw to monkey 0
-    If false: throw to monkey 6`
+    If false: throw to monkey 1`
 
 const terms = Term.hoist(
 	({
@@ -109,9 +81,10 @@ const terms = Term.hoist(
 				]),
 				([, op, , n]) => new Function("old", `return old ${op} ${n}`),
 			),
-			test: Term.emit(Term.list([Term.string("  Test: divisible by "), number]), ([, n]) => {
-				return (v) => v % n === 0
-			}),
+			test: Term.emit(
+				Term.list([Term.string("  Test: divisible by "), number]),
+				([, n]) => n,
+			),
 			ifTrue: Term.emit(
 				Term.list([Term.string("    If true: throw to monkey "), number]),
 				([, n]) => n,
@@ -125,7 +98,8 @@ const terms = Term.hoist(
 					number,
 					Term.emit(Term.maybe(Term.list([Term.string(", "), numbers])), ([, n]) => n),
 				]),
-				([n, ns]) => (ns ? [n, ...ns] : [n]),
+				([n, ns]) =>
+					ns ? [{ count: 0, remainder: n }, ...ns] : [{ count: 0, remainder: n }],
 			),
 			number: Term.emit(Term.regExp(/[0-9]+/), (v) => parseInt(v)),
 			variable: Term.string("old"),
@@ -141,14 +115,27 @@ const inputs = input.split("\n\n")
 const monkeys = inputs.map((v) => terms.monkey.translate(v))
 print("monkeys", monkeys)
 
-const doTurn = (index) => {
+const doTest = (v, n) => {
+	return v % n === 0
+}
+
+const doTurn = (index, testNumber) => {
 	const monkey = monkeys[index]
 	const { number, items, operation, test, ifTrue, ifFalse } = monkey
-	const inspectedItems = items.map((v) => operation(v))
-	const safeItems = inspectedItems.map((v) => Math.floor(v / 3))
+	const inspectedItems = items.map((v) => {
+		const newVal = operation(v.count * testNumber + v.remainder) // % testNumber
+		return {
+			count: (v.count += Math.floor(newVal / testNumber)),
+			remainder: newVal,
+		}
+	})
+	const safeItems = inspectedItems.map((v) => ({
+		count: v.count,
+		remainder: Math.floor(v.remainder / 1),
+	}))
 	for (const item of safeItems) {
 		monkey.count++
-		if (test(item)) {
+		if (doTest(item.remainder, test)) {
 			throwItemTo(item, monkeys[ifTrue])
 		} else {
 			throwItemTo(item, monkeys[ifFalse])
@@ -161,16 +148,16 @@ const throwItemTo = (item, monkey) => {
 	monkey.items.push(item)
 }
 
-const doRound = () => {
+const doRound = (testNumber) => {
 	for (let i = 0; i < monkeys.length; i++) {
-		doTurn(i)
+		doTurn(i, testNumber)
 	}
 }
 
 const showMonkeys = () => {
 	for (let i = 0; i < monkeys.length; i++) {
 		const monkey = monkeys[i]
-		print(`Monkey ${i}: ${monkey.items.join(", ")}`)
+		print(`Monkey ${i}: ${monkey.items.map((v) => v.remainder).join(", ")}`)
 	}
 }
 
@@ -181,9 +168,11 @@ const showMonkeyCounts = () => {
 	}
 }
 
+const testNumber = monkeys.reduce((a, b) => a * b.test, 1)
+
 showMonkeys()
 for (let i = 0; i < 20; i++) {
-	doRound()
+	doRound(testNumber)
 }
 print("brrr")
 showMonkeys()
